@@ -11,7 +11,7 @@ const DATA = [
   {id: '3', title: '할일 3', date: '2025.11.12', completed: false, important: false, remind: false, repeated: false},
   {id: '4', title: '할일 4', date: '2025.11.08', completed: false, important: false, remind: false, repeated: false},
   {id: '5', title: '할일 5', date: '2025.11.09', completed: false, important: false, remind: false, repeated: false}
-]
+] 
 
 function TodoItem({item, isDelete, isSelected, onComplete, onImportant, onPress, onLongPress}){
   const checkboxIcon = isDelete ? (isSelected ? 'check-box':'check-box-outline-blank')
