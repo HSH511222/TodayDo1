@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SignUpEmail from './src/screens/SignUp_Email';
 import BottomTabNavigator from './src/navigation/BottomNavigator';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator(); 
 
 export default function App() {
   return(

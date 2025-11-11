@@ -5,7 +5,7 @@ export default function SignUpEmail({ navigation }) {
   const [email, setEmail] = useState('');
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}> 
       <Text style={styles.title}>Mypage</Text>
 
       <View style={styles.inputContainer}>

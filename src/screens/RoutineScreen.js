@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function SignUpEmail({ navigation }) {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(''); 
 
   return (
     <View style={styles.container}>
