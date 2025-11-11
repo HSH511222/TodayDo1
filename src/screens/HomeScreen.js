@@ -219,6 +219,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: 'lightgray',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   }
 });
