@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain', // 이미지 비율 유지
   },
   button: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#3A9CFF',
     paddingVertical: 12,
     borderRadius: 60,
     alignItems: 'center',

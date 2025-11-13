@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#3A9CFF',
     borderRadius: 2,
   },
   inputContainer: {
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#3A9CFF',
     paddingVertical: 12,
     borderRadius: 60,
     alignItems: 'center',

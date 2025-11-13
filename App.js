@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import BackButton from './src/components/BackButton';
+import InitialScreen from './src/screens/InitialScreen';
 import SignUpEmail from './src/screens/SignUp_Email';
 import SignUpEmailCode from './src/screens/SignUp_EmailCode';
 import SignUpPW from './src/screens/SignUp_PW.js';
@@ -15,7 +16,12 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SignUpEmail">
+      <Stack.Navigator initialRouteName="InitialScreen">
+        <Stack.Screen
+          name="InitialScreen"
+          component={InitialScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="SignUpEmail"
           component={SignUpEmail}
