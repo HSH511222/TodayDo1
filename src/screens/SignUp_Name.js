@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { NoScaleText, NoScaleTextInput } from '../components/NoScaleText';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
-export default function SignUpEmail({ navigation }) {
-  const [email, setEmail] = useState('');
+export default function SignUpName({ navigation }) {
+  const [nickname, setNickname] = useState('');
 
   const totalSteps = 3; // 회원가입 총 단계
-  const currentStep = 1; // 현재 단계
+  const currentStep = 3; // 현재 단계
   const progressWidth = `${(currentStep / totalSteps) * 100}%`; // 진행바 길이
 
   return (
@@ -18,23 +18,22 @@ export default function SignUpEmail({ navigation }) {
           </View>
 
           <View style={styles.inputContainer}>
-            <NoScaleText style={styles.label}>이메일 입력</NoScaleText>
+            <NoScaleText style={styles.label}>닉네임 입력</NoScaleText>
             <NoScaleTextInput
               style={styles.input}
-              placeholder="e-mail"
+              placeholder="닉네임"
               placeholderTextColor="#bbb"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
+              value={nickname}
+              onChangeText={setNickname}
               autoCapitalize="none"
             />
           </View>
 
           <TouchableOpacity
-            style={[styles.button, !email && styles.buttonDisabled]}
-            disabled={!email}
+            style={[styles.button, !nickname && styles.buttonDisabled]}
+            disabled={!nickname}
             onPress={() => {
-              navigation.navigate('SignUpEmailCode', { email });
+              navigation.navigate('SignUpFin', { nickname });
             }}
           >
             <NoScaleText style={styles.buttonText}>계속</NoScaleText>
@@ -45,7 +44,7 @@ export default function SignUpEmail({ navigation }) {
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
@@ -55,13 +54,13 @@ export const styles = StyleSheet.create({
     paddingTop: 40,
     marginTop: 8,
 
-    //iOS 그림자 속성
+    // iOS 그림자
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 6,
 
-    //Android 그림자 속성
+    // Android 그림자
     elevation: 6,
   },
   progressBar: {

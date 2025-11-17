@@ -2,8 +2,14 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import BackButton from './src/components/BackButton';
+import InitialScreen from './src/screens/InitialScreen';
 import SignUpEmail from './src/screens/SignUp_Email';
-import NextScreen from './src/screens/NextScreen'; // 다음 화면 컴포넌트
+import SignUpEmailCode from './src/screens/SignUp_EmailCode';
+import SignUpPW from './src/screens/SignUp_PW';
+import SignUpName from './src/screens/SignUp_Name';
+import SignUpFin from './src/screens/SignUp_Fin';
+import SignIn from './src/screens/SignIn';
 import BottomNavigator from './src/navigation/BottomNavigator';
 
 const Stack = createNativeStackNavigator();
@@ -11,16 +17,66 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SignUpEmail">
+      <Stack.Navigator initialRouteName="InitialScreen">
+        <Stack.Screen
+          name="InitialScreen"
+          component={InitialScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="SignUpEmail"
           component={SignUpEmail}
-          options={{ title: '회원가입 이메일' }}
+          options={({ navigation }) => ({
+            title: '회원가입',
+            headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
         />
         <Stack.Screen
-          name="NextScreen"
-          component={NextScreen}
-          options={{ title: '다음 화면' }}
+          name="SignUpEmailCode"
+          component={SignUpEmailCode}
+          options={({ navigation }) => ({
+            title: '회원가입',
+            headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
+        <Stack.Screen
+          name="SignUpPW"
+          component={SignUpPW}
+          options={({ navigation }) => ({
+            title: '회원가입',
+            headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
+        <Stack.Screen
+          name="SignUpName"
+          component={SignUpName}
+          options={({ navigation }) => ({
+            title: '회원가입',
+            headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
+        <Stack.Screen
+          name="SignUpFin"
+          component={SignUpFin}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SignIn"
+          component={SignIn}
+          options={({ navigation }) => ({
+            title: '로그인',
+            headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
         />
         <Stack.Screen
           name="Main"

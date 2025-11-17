@@ -2,27 +2,21 @@ import React, { useState } from 'react';
 import { NoScaleText, NoScaleTextInput } from '../components/NoScaleText';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
-export default function SignUpEmail({ navigation }) {
-  const [email, setEmail] = useState('');
-
-  const totalSteps = 3; // 회원가입 총 단계
-  const currentStep = 1; // 현재 단계
-  const progressWidth = `${(currentStep / totalSteps) * 100}%`; // 진행바 길이
+export default function SignIn({ navigation }) {
+    const [email, setEmail] = useState('');
+    const [pw, setpw] = useState('');
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={{ flex: 1, backgroundColor: '#fff' }}>
         <View style={styles.container}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: progressWidth }]} />
-          </View>
 
-          <View style={styles.inputContainer}>
-            <NoScaleText style={styles.label}>이메일 입력</NoScaleText>
+          <View style={styles.emailinputContainer}>
             <NoScaleTextInput
-              style={styles.input}
+              style={styles.emailinput}
+              
               placeholder="e-mail"
-              placeholderTextColor="#bbb"
+              placeholderTextColor="#9a9a9aff"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -30,14 +24,26 @@ export default function SignUpEmail({ navigation }) {
             />
           </View>
 
+          <View style={styles.pwinputContainer}>
+            <NoScaleTextInput
+              style={styles.pwinput}
+              placeholder="password"
+              placeholderTextColor="#9a9a9aff"
+              value={pw}
+              onChangeText={setpw}
+              autoCapitalize="none"
+              secureTextEntry={true}
+            />
+          </View>
+
           <TouchableOpacity
             style={[styles.button, !email && styles.buttonDisabled]}
             disabled={!email}
             onPress={() => {
-              navigation.navigate('SignUpEmailCode', { email });
+              navigation.navigate('Main');
             }}
           >
-            <NoScaleText style={styles.buttonText}>계속</NoScaleText>
+            <NoScaleText style={styles.buttonText}>로그인</NoScaleText>
           </TouchableOpacity>
         </View>
       </View>
@@ -64,43 +70,40 @@ export const styles = StyleSheet.create({
     //Android 그림자 속성
     elevation: 6,
   },
-  progressBar: {
-    height: 3,
-    backgroundColor: '#ddd',
-    borderRadius: 2,
-    overflow: 'hidden',
-    marginBottom: 30,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#3A9CFF',
-    borderRadius: 2,
-  },
-  inputContainer: {
+  emailinputContainer: {
     marginBottom: 20,
     marginTop: 30,
     paddingHorizontal: 15,
   },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
+  emailinput: {
+    borderRadius: 60,
+    height: 45,
+    fontSize: 15,
+    color: '#000',
+    paddingHorizontal: 20,
+    backgroundColor: '#edededff',
   },
-  input: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    height: 40,
-    fontSize: 14,
-    color: '#333',
+  pwinputContainer: {
+    marginBottom: 20,
+    marginTop: 5,
+    paddingHorizontal: 15,
+  },
+  pwinput: {
+    borderRadius: 60,
+    height: 45,
+    fontSize: 15,
+    color: '#000',
+    paddingHorizontal: 20,
+    backgroundColor: '#edededff',
   },
   button: {
     backgroundColor: '#3A9CFF',
     paddingVertical: 12,
     borderRadius: 60,
     alignItems: 'center',
-    width: 80,
+    width: 90,
     alignSelf: 'center',
-    marginTop: 50,
+    marginTop: 20,
   },
   buttonDisabled: {
     backgroundColor: '#ccc',
