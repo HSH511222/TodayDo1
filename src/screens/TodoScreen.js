@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { NoScaleText, NoScaleTextInput } from '../components/NoScaleText';
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, FlatList, ScrollView, Alert, Modal } from 'react-native';
 
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -6,44 +7,57 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import Feather from '@expo/vector-icons/Feather'
 
 const DATA = [
-  {id: '1', title: '할일 1', date: '2025.11.11', completed: false, important: false, remind: false, repeated: false},
-  {id: '2', title: '할일 2', date: '2025.11.10', completed: false, important: false, remind: false, repeated: false},
-  {id: '3', title: '할일 3', date: '2025.11.12', completed: false, important: false, remind: false, repeated: false},
+  {id: '1', title: '할일 1', date: '2025.11.11', completed: false, important: false, remind: true, repeated: true},
+  {id: '2', title: '할일 2', date: '2025.11.10', completed: false, important: false, remind: false, repeated: true},
+  {id: '3', title: '할일 3', date: '2025.10.12', completed: false, important: false, remind: true, repeated: false},
   {id: '4', title: '할일 4', date: '2025.11.08', completed: false, important: false, remind: false, repeated: false},
-  {id: '5', title: '할일 5', date: '2025.11.09', completed: false, important: false, remind: false, repeated: false}
-] 
+  {id: '5', title: '할일 3', date: '2025.10.12', completed: false, important: false, remind: true, repeated: false},
+  {id: '6', title: '할일 4', date: '2025.11.08', completed: false, important: false, remind: false, repeated: false},
+  {id: '7', title: '할일 5', date: '2025.11.09', completed: false, important: false, remind: false, repeated: false},
+  {id: '8', title: '할일 5', date: '2025.11.09', completed: false, important: false, remind: false, repeated: false},
+  {id: '9', title: '할일 3', date: '2025.10.12', completed: false, important: false, remind: true, repeated: false},
+  {id: '10', title: '할일 4', date: '2025.11.08', completed: false, important: false, remind: false, repeated: false},
+  {id: '11', title: '할일 5', date: '2025.11.09', completed: false, important: false, remind: false, repeated: false},
+  {id: '12', title: '할일 5', date: '2025.11.09', completed: false, important: false, remind: false, repeated: false},
+  {id: '13', title: '할일 5', date: '2025.11.09', completed: false, important: false, remind: false, repeated: false},
+  {id: '14', title: '할일 3', date: '2025.10.12', completed: false, important: false, remind: true, repeated: false},
+  {id: '15', title: '할일 4', date: '2025.11.08', completed: false, important: false, remind: false, repeated: false},
+  ] 
 
 function TodoItem({item, isDelete, isSelected, onComplete, onImportant, onPress, onLongPress}){
-  const checkboxIcon = isDelete ? (isSelected ? 'check-box':'check-box-outline-blank')
+  const checkboxIcon = isDelete ? (isSelected ? 'checkbox':'square-outline')
     : (item.completed? 'checkmark-circle':'radio-button-off');
   const checkboxColor = isDelete ? (isSelected ? '#E50000':'gray')
     : (item.completed ? 'gray':'#3A9CFF');
   
+  const completedColor = item.completed ? 'gray' : '#3A9CFF';
+  const starColor = item.completed ? 'gray' : (item.important ? '#3A9CFF' : 'gray');
+
   return(
-    <TouchableOpacity onPress={onPress} onLongPress={onLongPress}>
+    <TouchableOpacity style={styles.itemRow} onPress={onPress} onLongPress={onLongPress}>
       <TouchableOpacity onPress={isDelete ? onPress : onComplete}>
         <Ionicons name={checkboxIcon} size={24} color={checkboxColor}/>
       </TouchableOpacity>
 
-      <View>
-        <View>
-          <Text>{item.title}</Text>
-          {item.remind && !item.completed && (
-            <MaterialCommunityIcons name="bell" size={10} color="#3A9CFF" />
+      <View style={styles.itemTextContainer}>
+        <View style={styles.itemTitleRow}>
+          <NoScaleText style={[styles.itemTitle, item.completed&&styles.itemTitleCompleted, {marginRight: 7}]}>{item.title}</NoScaleText>
+          {item.remind && (
+            <MaterialCommunityIcons name="bell" size={10} color={completedColor} style={{marginRight: 5}}/>
           )}
-          {item.repeated && !item.completed && (
-            <MaterialCommunityIcons name="bell" size={10} color="#3A9CFF" />
+          {item.repeated && (
+            <MaterialCommunityIcons name="repeat" size={10} color={completedColor} style={{marginRight: 5}} />
           )}
         </View>
-        <Text>{item.date}</Text>
+        <NoScaleText style={[styles.itemTitle, item.completed&&styles.itemTitleCompleted]}>{item.date}</NoScaleText>
       </View>
 
       {!isDelete && (
-        <TouchableOpacity onPress={onImportant}>
+        <TouchableOpacity onPress={onImportant} style={styles.itemIcon}>
           <Ionicons
             name={item.important ? 'star':'star-outline'}
             size={24}
-            color={item.important ? '#3A9CFF':'gray'}
+            color={starColor}
           />
         </TouchableOpacity>
       )}
@@ -52,33 +66,51 @@ function TodoItem({item, isDelete, isSelected, onComplete, onImportant, onPress,
 }
 
 function TodoHeader({
-  isDelete, selectCount, onCancelDelete, onDeleteSelected, remainderCount, onShowFilter, onShowSort, sortOrderText}){
+  isDelete, selectCount, onCancelDelete, onDeleteSelected, remainderCount, onShowFilter, onShowSort, sortOrderText, currentMonth, onPrevMonth, onNextMonth}){
     if(isDelete){
       return(
-        <View>
+        <View style={styles.headerRow}>
           <TouchableOpacity onPress={onCancelDelete}>
-            <Text>취소</Text>
+            <NoScaleText style={styles.headerButton}>취소</NoScaleText>
           </TouchableOpacity>
-          <Text>{selectCount}개 선택됨</Text>
+          <NoScaleText style={styles.headerTitle}>{selectCount}개 선택됨</NoScaleText>
           <TouchableOpacity onPress={onDeleteSelected}>
-            <Text style={{color: 'red'}}>삭제</Text>
+            <NoScaleText style={[styles.headerButton, {color: 'red'}]}>삭제</NoScaleText>
           </TouchableOpacity>
         </View>
       );
     }
+
+    const year = currentMonth.getFullYear();
+    const month = String(currentMonth.getMonth()+1).padStart(2, '0');
+    const monthString = `${year}.${month}`;
+
     return(
       <View>
-        <View>
-          <Text>남은 할 일</Text>
-          <Text>{remainderCount}개</Text>
-          <Text>잘 하고 있어요!</Text>
+        <View style={styles.monthRow}>
+          <TouchableOpacity onPress={onPrevMonth}>
+            <Ionicons name="chevron-back" size={24} color="black" style={{marginRight: 20}} />
+          </TouchableOpacity>
+          <NoScaleText style={styles.monthText}>{monthString}</NoScaleText>
+          <TouchableOpacity onPress={onNextMonth}>
+            <Ionicons name="chevron-forward" size={24} color="black0" style={{marginLeft: 20}} />
+          </TouchableOpacity>
         </View>
-        <View>
-          <TouchableOpacity onPress={onShowFilter}>
+
+        <View style={styles.statusBox}>
+          <NoScaleText style={styles.statusTitle}>남은 할 일</NoScaleText>
+          <NoScaleText style={styles.statusCount}>{remainderCount}개</NoScaleText>
+          <NoScaleText style={styles.statusSubText}>잘 하고 있어요!</NoScaleText>
+        </View>
+
+        <View style={styles.separator} />
+
+        <View style={styles.controlsRow}>
+          <TouchableOpacity onPress={onShowFilter} style={styles.filterButton}>
             <Ionicons name="filter" size={18} color="gray"/>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onShowSort}>
-            <Text>{sortOrderText}</Text>
+          <TouchableOpacity onPress={onShowSort} style={styles.sortButton}>
+            <NoScaleText style={styles.sortText}>{sortOrderText}</NoScaleText>
           </TouchableOpacity>
         </View>
       </View>
@@ -92,6 +124,7 @@ export default function TodoScreen(){
   const [filterVisible, setFilterVisible] = useState(false);
   const [sortVisible, setSortVisible] = useState(false);
   const [sortOrder, setSortOrder] = useState('최신등록순');
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const todoComplete = (id) => {
     setTodo(prevTodo =>
@@ -158,90 +191,264 @@ export default function TodoScreen(){
     );
   };
 
-  const sortTodo = useMemo(() => {
-    const newSortList = [...todo];
-
+  const {filterSortedTodo, remainderCount} = useMemo(() => {
     const parsedDate = (dateString) => {
       const reDate = dateString.replace(/\./gi, '-');
       return new Date(reDate);
     }
 
-    newSortList.sort((a, b) => {
-      if(a.completed && !b.completed){
-        return 1;
-      }
-      if(!a.completed && b.completed){
-        return -1;
-      }
+    const filterMonth = todo.filter(item => {
+      const itemDate = parsedDate(item.date);
+      return itemDate.getFullYear() === currentMonth.getFullYear() && itemDate.getMonth() === currentMonth.getMonth();
+    });
 
-      if(sortOrder === '기한순') {
-        return parsedDate(a.date) - parsedDate(b.date);
-      }
-      else if(sortOrder === '최신등록순'){
-        return Number(b.id) - Number(a.id);
-      }
-    })
+    const uncompleted = filterMonth.filter(item => !item.completed);
+    const completed = filterMonth.filter(item => item.completed);
 
-    return newSortList;
-  }, [todo, sortOrder]);
+    if(sortOrder === '기한순') {
+      uncompleted.sort((a, b) => parsedDate(a.date) - parsedDate(b.date));
+    }
+    else if(sortOrder === '최신등록순'){
+      uncompleted.sort((a, b) => Number(b.id) - Number(a.id));
+    }
+
+    const count = uncompleted.length;
+
+    return{
+      filterSortedTodo: [...uncompleted, ...completed],
+      remainderCount: count
+    };
+  }, [todo, sortOrder, currentMonth]);
 
   const itemSort = (newSortOrder) => {
     setSortOrder(newSortOrder);
     setSortVisible(false);
   };
 
-  const remainderCount = todo.filter(todo => !todo.completed).length;
+  const handlePrevMonth = () => {
+    setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  }
+  const handleNextMonth = () => {
+    setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  };
 
   return(
-    <SafeAreaView>
-      <TodoHeader
-        isDelete={isDelete}
-        selectCount={selectedId.size}
-        onCancelDelete={cancleDelete}
-        onDeleteSelected={deleteSelected}
-        remainderCount={remainderCount}
-        onShowFilter={()=>setFilterVisible(true)}
-        onShowSort={()=>setSortVisible(true)}
-        sortOrderText={sortOrder}
-      />
+    <SafeAreaView  style={styles.screen}>
+      <View style={styles.container}>
 
-      <FlatList
-        data={sortTodo}
-        keyExtractor={item => item.id}
-        renderItem={({item}) => (
-          <TodoItem
-            item={item}
-            isDelete={isDelete}
-            isSelected={selectedId.has(item.id)}
-            onComplete={()=>todoComplete(item.id)}
-            onImportant={()=>todoImportant(item.id)}
-            onPress={() => itemPress(item)}
-            onLongPress={() => itemLongPress(item.id)}
-          />
-        )}
-      />
+        <FlatList
+          data={filterSortedTodo}
+          keyExtractor={item => item.id}
+
+          ListHeaderComponent={<TodoHeader 
+              isDelete={isDelete}
+              selectCount={selectedId.size}
+              onCancelDelete={cancleDelete}
+              onDeleteSelected={deleteSelected}
+              remainderCount={remainderCount}
+              onShowFilter={()=>setFilterVisible(true)}
+              onShowSort={()=>setSortVisible(true)}
+              sortOrderText={sortOrder}
+              currentMonth={currentMonth}
+              onPrevMonth={handlePrevMonth}
+              onNextMonth={handleNextMonth}
+            />
+          }
+
+          renderItem={({item}) => (
+            <TodoItem
+              item={item}
+              isDelete={isDelete}
+              isSelected={selectedId.has(item.id)}
+              onComplete={()=>todoComplete(item.id)}
+              onImportant={()=>todoImportant(item.id)}
+              onPress={() => itemPress(item)}
+              onLongPress={() => itemLongPress(item.id)}
+            />
+          )}
+        />
+      </View>
 
       <Modal transparent={true} visible={sortVisible} onRequestClose={() => setSortVisible(false)}>
-        <TouchableOpacity activeOpacity={1} onPressOut={() => setSortVisible(false)}>
-          <View>
-            <Text>정렬</Text>
-            <TouchableOpacity onPress={() => itemSort('최신등록순')}>
-              <Text>최신등록순</Text>
+        <TouchableOpacity activeOpacity={1} onPressOut={() => setSortVisible(false)} style={styles.modalBackdrop}>
+          <View style={styles.modalContent}>
+            <NoScaleText style={styles.modalTitle}>정렬</NoScaleText>
+            <TouchableOpacity onPress={() => itemSort('최신등록순')} style={styles.modalButton}>
+              <NoScaleText>최신등록순</NoScaleText>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => itemSort('기한순')}>
-              <Text>기한순</Text>
+            <TouchableOpacity onPress={() => itemSort('기한순')} style={styles.modalButton}>
+              <NoScaleText>기한순</NoScaleText>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
 
       {!isDelete && (
-        <TouchableOpacity onPress={() => alert('새 Todo 추가')}>
-          <Ionicons name="add-circle" size={32} color="#3A9CFF"/>
+        <TouchableOpacity onPress={() => alert('새 Todo 추가')} style={styles.fab}>
+          <Ionicons name="add" size={40} color="white"/>
         </TouchableOpacity>
       )}
 
-      
       </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#FFFFFF'
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#f9f9f9',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    marginTop: 8,
+
+    //iOS 그림자 속성
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+
+    //Android 그림자 속성
+    elevation: 6,
+  },
+  headerContainer: {
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f9f9f9',
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f9f9f9',
+  },
+  headerTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  headerButton: {
+    fontSize: 16,
+    color: '#3A9CFF',
+  },
+  monthRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  monthText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: 'gray',
+    marginLeft: 16,
+    marginRight: 16,
+  },
+  statusBox: {
+    borderRadius: 15,
+    padding: 10,
+    marginHorizontal: 16,
+    marginTop: 4,
+    marginBottom: 5,
+  },
+  statusTitle: { fontSize: 18, color: 'black' },
+  statusCount: { fontSize: 28, fontWeight: 'bold', color: '#3A9CFF', marginVertical: 4 },
+  statusSubText: { fontSize: 12, color: 'gray' },
+  controlsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    marginTop: 10,
+  },
+  filterButton: {
+    padding: 6,
+    backgroundColor: 'lightgray',
+    borderRadius: 20,
+  },
+  sortButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'lightgray',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  sortText: {
+    marginHorizontal: 4,
+    fontSize: 14,
+  },
+  itemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f9f9f9',
+  },
+  itemIcon: {
+    padding: 4, 
+  },
+  itemTextContainer: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  itemTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  itemTitle: {
+    fontSize: 16,
+    color: '#333',
+  },
+  itemTitleCompleted: {
+    textDecorationLine: 'line-through',
+    color: '#AAAAAA',
+  },
+  itemDate: {
+    fontSize: 12,
+    color: 'gray',
+    marginTop: 2,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    width: 55,
+    height: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#3A9CFF',
+    borderRadius: 30,
+    elevation: 8,
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 16,
+    minWidth: 200,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  modalButton: {
+    paddingVertical: 12,
+  }
+});
