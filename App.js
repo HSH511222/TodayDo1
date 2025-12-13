@@ -2,6 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './src/components/CustomToast';
 import { AuthProvider } from './src/core/context/authContext';
 
 import BackButton from './src/components/BackButton';
@@ -21,8 +23,6 @@ import ChangePW from './src/screens/ChangePW';
 import NotificationScreen from './src/screens/NotificationScreen';
 import BottomNavigator from './src/navigation/BottomNavigator';
 
-// components for testing
-
 import { DataProvider } from './src/core/context/dataContext';
 
 const Stack = createNativeStackNavigator();
@@ -32,146 +32,147 @@ export default function App() {
   return (
     <AuthProvider>
       <DataProvider>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="InitialScreen">
-            <Stack.Screen
-              name="InitialScreen"
-              component={InitialScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SignUpEmail"
-              component={SignUpEmail}
-              options={({ navigation }) => ({
-                title: '회원가입',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="SignUpEmailCode"
-              component={SignUpEmailCode}
-              options={({ navigation }) => ({
-                title: '회원가입',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="SignUpPW"
-              component={SignUpPW}
-              options={({ navigation }) => ({
-                title: '회원가입',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="SignUpName"
-              component={SignUpName}
-              options={({ navigation }) => ({
-                title: '회원가입',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="SignUpFin"
-              component={SignUpFin}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SignIn"
-              component={SignIn}
-              options={({ navigation }) => ({
-                title: '로그인',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="ForgotPWEmail"
-              component={ForgotPWEmail}
-              options={({ navigation }) => ({
-                title: '계정복구',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="ForgotPWEmailCode"
-              component={ForgotPWEmailCode}
-              options={({ navigation }) => ({
-                title: '계정복구',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="ForgotPWNewPW"
-              component={ForgotPWNewPW}
-              options={({ navigation }) => ({
-                title: '계정복구',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="ForgotPWFin"
-              component={ForgotPWFin}
-              options={({ navigation }) => ({
-                title: '계정복구',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="AccountManagement"
-              component={AccountManagement}
-              options={({ navigation }) => ({
-                title: '계정관리',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="Main"
-              component={BottomNavigator}
-              options={{ gestureEnabled: false, headerShown: false }}
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="InitialScreen">
+              <Stack.Screen
+                name="InitialScreen"
+                component={InitialScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SignUpEmail"
+                component={SignUpEmail}
+                options={({ navigation }) => ({
+                  title: '회원가입',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="SignUpEmailCode"
+                component={SignUpEmailCode}
+                options={({ navigation }) => ({
+                  title: '회원가입',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="SignUpPW"
+                component={SignUpPW}
+                options={({ navigation }) => ({
+                  title: '회원가입',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="SignUpName"
+                component={SignUpName}
+                options={({ navigation }) => ({
+                  title: '회원가입',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="SignUpFin"
+                component={SignUpFin}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SignIn"
+                component={SignIn}
+                options={({ navigation }) => ({
+                  title: '로그인',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="ForgotPWEmail"
+                component={ForgotPWEmail}
+                options={({ navigation }) => ({
+                  title: '계정복구',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="ForgotPWEmailCode"
+                component={ForgotPWEmailCode}
+                options={({ navigation }) => ({
+                  title: '계정복구',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="ForgotPWNewPW"
+                component={ForgotPWNewPW}
+                options={({ navigation }) => ({
+                  title: '계정복구',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="ForgotPWFin"
+                component={ForgotPWFin}
+                options={({ navigation }) => ({
+                  title: '계정복구',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="AccountManagement"
+                component={AccountManagement}
+                options={({ navigation }) => ({
+                  title: '계정관리',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="Main"
+                component={BottomNavigator}
+                options={{ gestureEnabled: false, headerShown: false }}
 
-            />
-            <Stack.Screen
-              name="ChangePW"
-              component={ChangePW}
-              options={({ navigation }) => ({
-                title: '계정복구',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-            <Stack.Screen
-              name="Notification"
-              component={NotificationScreen}
-              options={({ navigation }) => ({
-                title: '알림',
-                headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
-                headerShown: true,
-                headerShadowVisible: false,
-              })}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
+              />
+              <Stack.Screen
+                name="ChangePW"
+                component={ChangePW}
+                options={({ navigation }) => ({
+                  title: '계정복구',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+              <Stack.Screen
+                name="Notification"
+                component={NotificationScreen}
+                options={({ navigation }) => ({
+                  title: '알림',
+                  headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                  headerShown: true,
+                  headerShadowVisible: false,
+                })}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        <Toast config={toastConfig} />
       </DataProvider>
     </AuthProvider>
   );

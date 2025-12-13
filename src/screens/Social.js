@@ -2,48 +2,81 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback, FlatList } from 'react-native';
 import { NoScaleText, NoScaleTextInput } from '../components/NoScaleText';
 import { Ionicons } from '@expo/vector-icons';
+import FriendItem from '../components/FriendItem';
 
 export default function Social({ navigation }) {
   const [activeTab, setActiveTab] = useState('friendsList');
   const [email, setEmail] = useState('');
 
   //데이터 리스트
-  const [currentfriends, setcurrentfriends] = useState([
-    { id: '1', email: 'aaa@test.com' },
-    { id: '2', email: 'bbb@test.com' },
-    { id: '3', email: 'ccc@test.com' },
-    { id: '4', email: 'ddd@test.com' },
-    { id: '5', email: 'eee@test.com' },
-    { id: '6', email: 'fff@test.com' },
-    { id: '7', email: 'ggg@test.com' },
-    { id: '8', email: 'hhh@test.com' },
-    { id: '9', email: 'iii@test.com' },
+  const [currentFriends, setCurrentFriends] = useState([
+    {
+    id: 'c-1',
+    profileImage: null,
+    title: '🦊 생각 먹는 여우',
+    level: 12,
+    nickname: '고모프',
+    },
+    {
+    id: 'c-2',
+    profileImage: null,
+    title: null,
+    level: 2,
+    nickname: 'Hansung',
+    },
   ]);
 
   const [sentRequests, setSentRequests] = useState([
-    { id: '1', email: 'aaa@test.com' },
-    { id: '2', email: 'bbb@test.com' },
-    { id: '3', email: 'ccc@test.com' },
-    { id: '4', email: 'ddd@test.com' },
-    { id: '5', email: 'eee@test.com' },
-    { id: '6', email: 'fff@test.com' },
-    { id: '7', email: 'ggg@test.com' },
-    { id: '8', email: 'hhh@test.com' },
-    { id: '9', email: 'iii@test.com' },
+    {
+    id: 's-1',
+    profileImage: null,
+    title: '🦊 생각 먹는 여우',
+    level: 12,
+    nickname: '고모프',
+    },
   ]);
   
-  const [recievefriends, setrecievefriends] = useState([
-    { id: '1', email: 'aaa@test.com' },
-    { id: '2', email: 'bbb@test.com' },
-    { id: '3', email: 'ccc@test.com' },
-    { id: '4', email: 'ddd@test.com' },
-    { id: '5', email: 'eee@test.com' },
-    { id: '6', email: 'fff@test.com' },
-    { id: '7', email: 'ggg@test.com' },
-    { id: '8', email: 'hhh@test.com' },
-    { id: '9', email: 'iii@test.com' },
+  const [recieveFriends, setRecieveFriends] = useState([
+    {
+    id: 'r-1',
+    profileImage: null,
+    title: '🦊 생각 먹는 여우',
+    level: 12,
+    nickname: '고모프',
+    },
   ]);
 
+  //친구 삭제
+  const handleDeleteFriend = (id) => {
+  setCurrentFriends((prev) =>
+    prev.filter((item) => item.id !== id)
+  );
+};
+
+  // 친구 신청 취소 (보낸 신청)
+const handleCancelRequest = (id) => {
+  setSentRequests((prev) =>
+    prev.filter((item) => item.id !== id)
+  );
+};
+
+// 친구 요청 수락
+const handleAcceptRequest = (friend) => {
+  // 1️⃣ 받은 신청 목록에서 제거
+  setRecieveFriends((prev) =>
+    prev.filter((item) => item.id !== friend.id)
+  );
+
+  // 2️⃣ 친구 목록에 추가
+  setCurrentFriends((prev) => [...prev, friend]);
+};
+
+// 친구 요청 거절
+const handleRejectRequest = (id) => {
+  setRecieveFriends((prev) =>
+    prev.filter((item) => item.id !== id)
+  );
+};
 
   return (
     
@@ -82,12 +115,14 @@ export default function Social({ navigation }) {
           {activeTab === 'friendsList' && (
             <View style={styles.listContainer}>
               <FlatList
-                  data={currentfriends}
+                  data={currentFriends}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => (
-                    <View style={styles.requestItem}>
-                      <NoScaleText>{item.email}</NoScaleText>
-                    </View>
+                    <FriendItem {...item} type="c" 
+                    onDelete={() => {
+                      handleDeleteFriend(item.id)
+                    }}
+                    />
                   )}
                   ListEmptyComponent={
                     <View style={styles.emptyListContainer}>
@@ -96,7 +131,7 @@ export default function Social({ navigation }) {
                   }
                   contentContainerStyle={{
                     flexGrow: 1,
-                    justifyContent: sentRequests.length === 0 ? 'center' : 'flex-start',
+                    justifyContent: currentFriends.length === 0 ? 'center' : 'flex-start',
                   }}
                 />
             </View>
@@ -127,10 +162,6 @@ export default function Social({ navigation }) {
                   >
                     <NoScaleText style={styles.buttonText}>신청</NoScaleText>
                   </TouchableOpacity>
-
-                  {/*<View style={styles.listContainer}>
-                    <NoScaleText style={styles.sublabel}>보낸 신청 목록</NoScaleText>
-                  </View>*/}
                 </View>
               </TouchableWithoutFeedback>
 
@@ -140,9 +171,13 @@ export default function Social({ navigation }) {
                   data={sentRequests}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => (
-                    <View style={styles.requestItem}>
-                      <NoScaleText>{item.email}</NoScaleText>
-                    </View>
+                    <FriendItem
+                      {...item}
+                      type="s"
+                      onCancel={() => {
+                        handleCancelRequest(item.id)
+                      }}
+                    />
                   )}
                   ListEmptyComponent={
                     <View style={styles.emptyListContainer}>
@@ -160,12 +195,19 @@ export default function Social({ navigation }) {
           {activeTab === 'receivedRequest' && (
             <View style={styles.listContainer}>
               <FlatList
-                  data={recievefriends}
+                  data={recieveFriends}
                   keyExtractor={(item) => item.id}
                   renderItem={({ item }) => (
-                    <View style={styles.requestItem}>
-                      <NoScaleText>{item.email}</NoScaleText>
-                    </View>
+                    <FriendItem
+                      {...item}
+                      type="r"
+                      onAccept={() => {
+                        handleAcceptRequest(item)
+                      }}
+                      onReject={() => {
+                        handleRejectRequest(item.id)
+                      }}
+                    />
                   )}
                   ListEmptyComponent={
                     <View style={styles.emptyListContainer}>
@@ -174,7 +216,7 @@ export default function Social({ navigation }) {
                   }
                   contentContainerStyle={{
                     flexGrow: 1,
-                    justifyContent: sentRequests.length === 0 ? 'center' : 'flex-start',
+                    justifyContent: recieveFriends.length === 0 ? 'center' : 'flex-start',
                   }}
                 />
             </View>
@@ -266,7 +308,7 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     marginBottom: 30,
-    paddingHorizontal: 35,
+    paddingHorizontal: 15,
   },
   requestList: {
     flex: 1,
