@@ -172,13 +172,13 @@ export default function Statistics() {
                   <View style={{ height: routineHeight, backgroundColor: '#CDCDCD', width: '100%' }} />
                   <View style={{ height: todoHeight, backgroundColor: '#3A9CFF', width: '100%' }} />
                   <NoScaleText
-                    style={[
-                      styles.graphLabel,
-                      filter === '연도별' && { width: 30 }
-                    ]}
-                  >
-                    {label}
-                  </NoScaleText>
+                  style={[
+                    styles.graphLabel,
+                    filter === '연도별' && { width: 30 }
+                  ]}
+                >
+                  {label}
+                </NoScaleText>
                 </View>
               );
             })}
@@ -208,7 +208,7 @@ export default function Statistics() {
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',

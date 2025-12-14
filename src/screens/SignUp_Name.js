@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NoScaleText, NoScaleTextInput } from '../components/NoScaleText';
-import { View, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
 import { useAuth } from '../core/context/authContext';
 
 export default function SignUpName({ navigation, route }) {

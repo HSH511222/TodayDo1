@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
-import { NoScaleText, NoScaleTextInput } from '../components/NoScaleText';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React from 'react';
+import { NoScaleText } from '../components/NoScaleText';
+import { View, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { useUser } from '../core/context/userContext';  // 사용자 정보 context 가정
 
 export default function AccountManagement({ navigation }) {
-    const [email, setEmail] = useState('');
-    const [pw, setpw] = useState('');
+  const { userProfile, loading } = useUser();
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center' }]}>
+        <NoScaleText>Loading...</NoScaleText>
+      </View>
+    );
+  }
+
+  if (!userProfile) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center' }]}>
+        <NoScaleText>로그인이 필요합니다.</NoScaleText>
+      </View>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -12,32 +28,13 @@ export default function AccountManagement({ navigation }) {
         <View style={styles.container}>
           <View style={styles.emailinputContainer}>
             <NoScaleText style={styles.emailtext}>이메일</NoScaleText>
-            <NoScaleTextInput
-              style={styles.emailinput}
-              
-              placeholder="e-mail"
-              placeholderTextColor="#9a9a9aff"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
+            {/* 이메일을 Text로 출력 */}
+            <NoScaleText style={[styles.emailinput, { paddingVertical: 12 }]}>
+              {userProfile.email}
+            </NoScaleText>
           </View>
 
-          <View style={styles.pwinputContainer}>
-            <NoScaleText style={styles.pwtext}>비밀번호</NoScaleText>
-            <NoScaleTextInput
-              style={styles.pwinput}
-              placeholder="password"
-              placeholderTextColor="#9a9a9aff"
-              value={pw}
-              onChangeText={setpw}
-              autoCapitalize="none"
-              secureTextEntry={true}
-            />
-          </View>
-
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => {
               navigation.navigate('ChangePW');
             }}
@@ -78,27 +75,9 @@ export const styles = StyleSheet.create({
   emailtext: {
     marginBottom: 15,
     marginLeft: 20,
-    fontWeight: 600,
+    fontWeight: '600',
   },
   emailinput: {
-    borderRadius: 60,
-    height: 45,
-    fontSize: 15,
-    color: '#000',
-    paddingHorizontal: 20,
-    backgroundColor: '#edededff',
-  },
-  pwinputContainer: {
-    marginBottom: 20,
-    marginTop: 5,
-    paddingHorizontal: 15,
-  },
-  pwtext: {
-    marginBottom: 15,
-    marginLeft: 20,
-    fontWeight: 600,
-  },
-  pwinput: {
     borderRadius: 60,
     height: 45,
     fontSize: 15,

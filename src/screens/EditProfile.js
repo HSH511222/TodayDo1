@@ -1,15 +1,51 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image,   TouchableOpacity, TextInput, Switch, Keyboard, TouchableWithoutFeedback, } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  Switch,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { NoScaleText } from '../components/NoScaleText';
+import { Ionicons } from '@expo/vector-icons';
+import { useUser } from '../core/context/userContext';
 
-export default function ProfileEditScreen() {
+export default function EditProfile() {
   const defaultProfileImage = require('../../assets/defaultprofileimage.png');
 
-  /* ---------- 상태 ---------- */
-  const [nickname, setNickname] = useState('닉네임');
+  // 유저 데이터 불러오기
+  const { userProfile, loading } = useUser();
+
+  // 로딩 중일 때 간단 처리
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center' }]}>
+        <NoScaleText>Loading...</NoScaleText>
+      </View>
+    );
+  }
+
+  // userProfile이 없으면 로그인 필요 표시
+  if (!userProfile) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center' }]}>
+        <NoScaleText>로그인이 필요합니다.</NoScaleText>
+      </View>
+    );
+  }
+
+  // 초기값 설정: userProfile 닉네임과 칭호 (없으면 기본값)
+  const [nickname, setNickname] = useState(userProfile.nickname || '닉네임');
   const [isEditingNickname, setIsEditingNickname] = useState(false);
 
-  const [title, setTitle] = useState('칭호');
+  const [title, setTitle] = useState(userProfile.title || '칭호 선택 안함');
+  const [expanded, setExpanded] = useState(false);
+  const [filter, setFilter] = useState(userProfile.title || '칭호 선택 안함');
+
+  const options = ['칭호 선택 안함', '🐣 처음 날개 단 병아리'];
 
   const [privacy, setPrivacy] = useState({
     todo: true,
@@ -20,16 +56,21 @@ export default function ProfileEditScreen() {
     profile: true,
   });
 
-  /* ---------- 함수 ---------- */
+  /* 갤러리 열기 예시 */
   const openGallery = () => {
-    // TODO: expo-image-picker 연결 예정
     console.log('갤러리 열기');
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+        setExpanded(false);
+        setIsEditingNickname(false);
+      }}
+      accessible={false}
+    >
       <View style={styles.container}>
-
         {/* ================= 프로필 이미지 ================= */}
         <View style={styles.profileImageWrapper}>
           <Image source={defaultProfileImage} style={styles.profileImage} />
@@ -55,9 +96,55 @@ export default function ProfileEditScreen() {
         </TouchableOpacity>
 
         {/* ================= 칭호 드롭다운 ================= */}
-        <TouchableOpacity style={styles.dropdown}>
-          <NoScaleText style={styles.dropdownText}>{title}</NoScaleText>
-        </TouchableOpacity>
+        <View
+          style={[
+            styles.filterButtonContainer,
+            expanded && styles.filterButtonExpanded,
+          ]}
+        >
+          <TouchableOpacity
+            style={styles.filterButton}
+            activeOpacity={1}
+            onPress={() => setExpanded((e) => !e)}
+          >
+            <NoScaleText style={styles.filterText}>{filter}</NoScaleText>
+            <Ionicons
+              name={expanded ? 'chevron-up' : 'chevron-down'}
+              size={14}
+              color="#333"
+              style={{ marginLeft: 6 }}
+            />
+          </TouchableOpacity>
+
+          {/* 옵션 펼침 */}
+          {expanded && (
+            <View style={styles.optionsContainer}>
+              {options.map((opt) => (
+                <TouchableOpacity
+                  key={opt}
+                  style={[
+                    styles.optionItem,
+                    filter === opt && styles.optionItemSelected,
+                  ]}
+                  onPress={() => {
+                    setFilter(opt);
+                    setTitle(opt);
+                    setExpanded(false);
+                  }}
+                >
+                  <NoScaleText
+                    style={[
+                      styles.filterText,
+                      filter === opt && { fontWeight: 'bold' },
+                    ]}
+                  >
+                    {opt}
+                  </NoScaleText>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
 
         {/* ================= 데이터 공개 설정 ================= */}
         <View style={styles.privacyCard}>
@@ -82,14 +169,12 @@ export default function ProfileEditScreen() {
             </View>
           ))}
         </View>
-
       </View>
     </TouchableWithoutFeedback>
   );
 }
 
 /* ================= 스타일 ================= */
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -150,19 +235,41 @@ const styles = StyleSheet.create({
   },
 
   /* 칭호 드롭다운 */
-  dropdown: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    backgroundColor: '#f3f3f3',
-    width: 200,
+  filterButtonContainer: {
+    position: 'absolute',
+    top: 230,
     alignItems: 'center',
-    marginBottom: 30,
+    backgroundColor: '#EBEBEB',
+    borderRadius: 30,
+    overflow: 'hidden',
+    minWidth: 250,
+    zIndex: 1000,
   },
-
-  dropdownText: {
+  filterButtonExpanded: {
+    backgroundColor: '#EBEBEB',
+  },
+  filterButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  filterText: {
     fontSize: 14,
-    color: '#666',
+    color: '#333',
+  },
+  optionsContainer: {
+    width: '100%',
+    borderTopWidth: 1,
+    borderTopColor: '#cdcdcdff',
+  },
+  optionItem: {
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  optionItemSelected: {
+    backgroundColor: '#f7f7f7ff',
   },
 
   /* 데이터 공개 설정 */
@@ -170,7 +277,8 @@ const styles = StyleSheet.create({
     width: '90%',
     backgroundColor: '#fff',
     borderRadius: 20,
-    padding: 20,
+    padding: 30,
+    marginTop: 70,
 
     shadowColor: '#000',
     shadowOpacity: 0.1,
@@ -179,9 +287,12 @@ const styles = StyleSheet.create({
   },
 
   privacyTitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginBottom: 18,
+    paddingVertical: 8,
   },
 
   privacyRow: {

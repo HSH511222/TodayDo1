@@ -1,17 +1,54 @@
 import React, { useState } from 'react';
-import { NoScaleText, } from '../components/NoScaleText';
-import { View, TouchableOpacity, StyleSheet, } from 'react-native';
+import { NoScaleText } from '../components/NoScaleText';
+import { View, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import AuthService from '../core/firebase/authService'; // 경로 조정
 
-export default function EmailVerification({ navigation, route}) {
+export default function EmailVerification({ navigation, route }) {
   const email = route?.params?.email || '';
 
-  const totalSteps = 3; // 회원가입 총 단계
-  const currentStep = 2; // 현재 단계
-  const progressWidth = `${(currentStep / totalSteps) * 100}%`; // 진행바 길이
+  const totalSteps = 3;
+  const currentStep = 2;
+  const progressWidth = `${(currentStep / totalSteps) * 100}%`;
 
-  const resendLink = () => {
-    // TODO: 재전송 API
-    console.log('이메일 재전송:', email);
+  const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+
+  // 인증 완료 확인
+  const checkVerification = async () => {
+    setLoading(true);
+    try {
+      const verified = await AuthService.checkEmailVerification();
+
+      if (verified) {
+        Alert.alert('인증 완료', '이메일 인증이 완료되었습니다.', [
+          {
+            text: '확인',
+            onPress: () => {
+              navigation.navigate('SignUpName'); // 닉네임 설정 화면으로 이동
+            },
+          },
+        ]);
+      } else {
+        Alert.alert('인증 미완료', '아직 이메일 인증이 완료되지 않았습니다.\n메일함을 다시 확인해주세요.');
+      }
+    } catch (error) {
+      Alert.alert('오류', error.message || '인증 상태 확인 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 인증 메일 재전송
+  const resendLink = async () => {
+    setResendLoading(true);
+    try {
+      await AuthService.resendVerificationEmail();
+      Alert.alert('재전송 완료', `${email} 로 인증 메일을 다시 보냈습니다.`);
+    } catch (error) {
+      Alert.alert('재전송 실패', error.message || '인증 메일 재전송에 실패했습니다.');
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   return (
@@ -24,19 +61,26 @@ export default function EmailVerification({ navigation, route}) {
         <NoScaleText style={styles.emailText}>{email}로</NoScaleText>
         <NoScaleText style={styles.noticeText}>인증링크를 전송했습니다.</NoScaleText>
         <NoScaleText style={styles.noticeText}>링크를 눌러 인증을 완료해주세요.</NoScaleText>
-            
-        <TouchableOpacity onPress={resendLink}>
-          <NoScaleText style={styles.resend}>재전송</NoScaleText>
+
+        <TouchableOpacity onPress={resendLink} disabled={resendLoading}>
+          {resendLoading ? (
+            <ActivityIndicator size="small" color="#4a90e2" />
+          ) : (
+            <NoScaleText style={styles.resend}>재전송</NoScaleText>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => {
-                navigation.navigate('SignUpName');
-              }}
-            >
-              <NoScaleText style={styles.buttonText}>계속</NoScaleText>
-            </TouchableOpacity>
+          style={[styles.button, loading && styles.buttonDisabled]}
+          onPress={checkVerification}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <NoScaleText style={styles.buttonText}>인증완료</NoScaleText>
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -53,13 +97,11 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     alignItems: 'center',
 
-    //iOS 그림자 속성
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 6,
 
-    //Android 그림자 속성
     elevation: 6,
   },
   progressBar: {
@@ -98,7 +140,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 60,
     alignItems: 'center',
-    width: 80,
+    width: 120,
     alignSelf: 'center',
     marginTop: 50,
     marginBottom: 500,
