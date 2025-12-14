@@ -18,6 +18,7 @@ import ForgotPWFin from './src/screens/ForgotPW_Fin';
 import ChangePW from './src/screens/ChangePW';
 import NotificationScreen from './src/screens/NotificationScreen';
 import BottomNavigator from './src/navigation/BottomNavigator';
+import Statistics from './src/screens/Statistics';
 
 import { toastConfig } from './src/components/CustomToast';
 import { AuthProvider } from './src/core/context/authContext';
@@ -145,6 +146,16 @@ export default function App() {
                   component={NotificationScreen}
                   options={({ navigation }) => ({
                     title: '알림',
+                    headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+                    headerShown: true,
+                    headerShadowVisible: false,
+                  })}
+                />
+                <Stack.Screen
+                  name="Statistics"
+                  component={Statistics}
+                  options={({ navigation }) => ({
+                    title: '통계',
                     headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
                     headerShown: true,
                     headerShadowVisible: false,
