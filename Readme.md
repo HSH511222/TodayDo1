@@ -32,7 +32,8 @@
 
 ### 폴더 구조
 
-```src
+```
+assets
 src
 ├── components
 ├── core
@@ -54,6 +55,7 @@ src
 | src/screens/ | 각 네비게이션 경로에 매핑되는 주요 화면 컴포넌트 (Home, Todo, Record, Mypage 등) |
 | src/components/ | 재사용 가능한 UI 요소 및 작은 로직 컴포넌트 |
 | src/core/ | 앱에 필요한 데이터를 관리하고, 서버(Firebase)와 통신하는 기능 모음 |
+| assets/,<br>src/images/ | UI 구현에 필요한 이미지 |
 | src/navigation/ | Stack 및 Tab Navigator 등 화면 간의 이동 구조 정의 |
 
 
@@ -100,6 +102,6 @@ Todo 탭
 | 김지민 | 2291147 | [rwajm](https://github.com/rwajm/TodayDo) |
 | 김채현 | 2371114 | [KCH-ddar](https://github.com/KCH-ddar/TodayDo_App) |
 | 손미강 | 2271101 | [thsalrkd](https://github.com/thsalrkd/TodayDo) |
-| 홍수현 | 2171267 |  |
+| 홍수현 | 2171267 | [HSH511222](https://github.com/HSH511222/TodayDo1) |
 
 최종 작성일: 2025-12-14
